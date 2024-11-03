@@ -1,0 +1,49 @@
+name: Desplegar
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    name: Construir
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout del repositorio
+        uses: actions/checkout
+
+      - name: Configurar Node
+        uses: actions/setup-node
+
+      - name: Instalar dependencias
+        uses: bahmutov/npm-install
+
+      - name: Construir proyecto
+        run: npm run build
+
+      - name: Subir archivos listos para producción
+        uses: actions/upload-artifact
+        with:
+          name: archivos-produccion
+          path: ./dist
+
+  deploy:
+    name: Desplegar
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Descargar artefacto
+        uses: actions/download-artifact
+        with:
+          name: archivos-produccion
+          path: ./dist
+
+      - name: Desplegar en GitHub Pages
+        uses: peaceiris/actions-gh-pages
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
