@@ -12,19 +12,19 @@ jobs:
 
     steps:
       - name: Checkout del repositorio
-        uses: actions/checkout
+        uses: actions/checkout@v3
 
       - name: Configurar Node
-        uses: actions/setup-node
+        uses: actions/setup-node@v2
 
       - name: Instalar dependencias
-        uses: bahmutov/npm-install
+        uses: bahmutov/npm-install@v1
 
       - name: Construir proyecto
         run: npm run build
 
       - name: Subir archivos listos para producción
-        uses: actions/upload-artifact
+        uses: actions/upload-artifact@v3
         with:
           name: archivos-produccion
           path: ./dist
@@ -37,13 +37,13 @@ jobs:
 
     steps:
       - name: Descargar artefacto
-        uses: actions/download-artifact
+        uses: actions/download-artifact@v3
         with:
           name: archivos-produccion
           path: ./dist
 
       - name: Desplegar en GitHub Pages
-        uses: peaceiris/actions-gh-pages
+        uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./dist
